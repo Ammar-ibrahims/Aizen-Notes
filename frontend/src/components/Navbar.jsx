@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 export default function Navbar() {
   const { totalItems } = useCart();
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <nav style={styles.nav}>
       <div style={styles.container}>
         <Link to="/" style={styles.logo}>
-          <span style={styles.logoText}>AIZEN</span>
-          <span style={styles.logoSub}>NOTES</span>
+          <img src="/logo.png" alt="Aizen Notes" style={styles.logoImg} />
         </Link>
 
         <div style={styles.links}>
@@ -46,21 +44,12 @@ const styles = {
   },
   logo: {
     display: 'flex',
-    flexDirection: 'column',
-    lineHeight: 1,
+    alignItems: 'center',
   },
-  logoText: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: 22,
-    fontWeight: 700,
-    color: '#d4a72c',
-    letterSpacing: '0.15em',
-  },
-  logoSub: {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 9,
-    color: '#a08040',
-    letterSpacing: '0.4em',
+  logoImg: {
+    height: 42,
+    width: 'auto',
+    objectFit: 'contain',
   },
   links: {
     display: 'flex',

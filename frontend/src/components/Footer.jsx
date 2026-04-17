@@ -6,7 +6,7 @@ export default function Footer() {
     <footer style={styles.footer}>
       <div style={styles.container}>
         <div style={styles.brand}>
-          <span style={styles.logoText}>AIZEN NOTES</span>
+          <img src="/logo.png" alt="Aizen Notes" style={styles.logoImg} />
           <p style={styles.tagline}>Luxury fragrances crafted for the discerning soul.</p>
         </div>
         <div style={styles.links}>
@@ -38,13 +38,14 @@ const styles = {
   brand: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 6,
+    alignItems: 'center',
+    gap: 10,
   },
-  logoText: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: 20,
-    color: '#d4a72c',
-    letterSpacing: '0.2em',
+  logoImg: {
+    height: 48,
+    width: 'auto',
+    objectFit: 'contain',
+    opacity: 0.9,
   },
   tagline: {
     color: '#8a7050',
