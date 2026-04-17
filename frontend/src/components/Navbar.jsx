@@ -1,96 +1,152 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 export default function Navbar() {
   const { totalItems } = useCart();
+  const [hoveredLink, setHoveredLink] = useState(null);
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <nav style={styles.nav}>
-      <div style={styles.container}>
+    <nav style={styles.nav} className="glass">
+      <div style={styles.container} className="nav-container">
         <Link to="/" style={styles.logo}>
           <img src="/logo.png" alt="Aizen Notes" style={styles.logoImg} />
         </Link>
 
-        <div style={styles.links}>
-          <Link to="/" style={styles.link}>Home</Link>
-          <Link to="/shop" style={styles.link}>Shop</Link>
-          <Link to="/cart" style={styles.cartBtn}>
+        <div style={styles.links} className="nav-links">
+          <Link 
+            to="/" 
+            style={{
+              ...styles.link,
+              color: isActive('/') || hoveredLink === 'home' ? 'var(--color-primary)' : 'var(--color-text)',
+              textShadow: isActive('/') || hoveredLink === 'home' ? '0 0 15px rgba(255,215,0,0.8)' : 'none',
+              transform: hoveredLink === 'home' ? 'translateY(-2px)' : 'translateY(0)',
+            }}
+            onMouseEnter={() => setHoveredLink('home')}
+            onMouseLeave={() => setHoveredLink(null)}
+          >
+            Home
+            {isActive('/') && <span style={styles.activeDot} className="active-glow"></span>}
+          </Link>
+          
+          <Link 
+            to="/shop" 
+            style={{
+              ...styles.link,
+              color: isActive('/shop') || hoveredLink === 'shop' ? 'var(--color-primary)' : 'var(--color-text)',
+              textShadow: isActive('/shop') || hoveredLink === 'shop' ? '0 0 15px rgba(255,215,0,0.8)' : 'none',
+              transform: hoveredLink === 'shop' ? 'translateY(-2px)' : 'translateY(0)',
+            }}
+            onMouseEnter={() => setHoveredLink('shop')}
+            onMouseLeave={() => setHoveredLink(null)}
+          >
+            Shop
+            {isActive('/shop') && <span style={styles.activeDot} className="active-glow"></span>}
+          </Link>
+
+          <Link 
+            to="/cart" 
+            style={{
+              ...styles.link,
+              color: isActive('/cart') || hoveredLink === 'cart' ? 'var(--color-primary)' : 'var(--color-text)',
+              textShadow: isActive('/cart') || hoveredLink === 'cart' ? '0 0 15px rgba(255,215,0,0.8)' : 'none',
+              transform: hoveredLink === 'cart' ? 'translateY(-2px)' : 'translateY(0)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+            onMouseEnter={() => setHoveredLink('cart')}
+            onMouseLeave={() => setHoveredLink(null)}
+          >
             <span>Cart</span>
-            {totalItems > 0 && <span style={styles.badge}>{totalItems}</span>}
+            {totalItems > 0 && <span style={{...styles.badge, animation: 'pulse 2s infinite'}}>
+              {totalItems}
+            </span>}
+            {isActive('/cart') && <span style={styles.activeDot} className="active-glow"></span>}
           </Link>
         </div>
       </div>
+      <style>{`
+        .active-glow {
+          position: absolute;
+          bottom: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 6px;
+          height: 6px;
+          background: var(--color-primary);
+          border-radius: 50%;
+          box-shadow: 0 0 10px 2px rgba(255,215,0,0.8);
+          animation: fade-in-up 0.3s ease-out forwards;
+        }
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translate(-50%, 4px); }
+          to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255,215,0,0.4); }
+          50% { transform: scale(1.15); box-shadow: 0 0 20px rgba(255,215,0,0.8); }
+        }
+      `}</style>
     </nav>
   );
 }
 
 const styles = {
   nav: {
-    background: '#1a1208',
-    padding: '0 24px',
+    padding: '0',
     position: 'sticky',
     top: 0,
     zIndex: 100,
-    boxShadow: '0 2px 16px rgba(0,0,0,0.3)',
+    width: '100%',
+    transition: 'var(--transition)',
   },
   container: {
+    padding: '20px 24px',
     maxWidth: 1200,
     margin: '0 auto',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 70,
   },
   logo: {
     display: 'flex',
     alignItems: 'center',
+    transition: 'var(--transition)',
   },
   logoImg: {
-    height: 42,
+    height: 32,
     width: 'auto',
     objectFit: 'contain',
+    filter: 'drop-shadow(0 4px 10px rgba(255,215,0,0.3))',
+    transition: 'var(--transition)',
   },
-  links: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 32,
-  },
+  links: {},
   link: {
-    color: '#e8d8b0',
-    fontFamily: "'Inter', sans-serif",
+    fontFamily: "var(--font-sans)",
     fontSize: 14,
-    fontWeight: 500,
-    letterSpacing: '0.05em',
+    fontWeight: 700,
+    letterSpacing: '0.15em',
     textTransform: 'uppercase',
-    transition: 'color 0.2s',
-  },
-  cartBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    color: '#e8d8b0',
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 14,
-    fontWeight: 500,
-    letterSpacing: '0.05em',
-    textTransform: 'uppercase',
-    background: 'rgba(212,167,44,0.15)',
-    border: '1px solid rgba(212,167,44,0.3)',
-    borderRadius: 6,
-    padding: '6px 14px',
+    transition: 'var(--transition)',
     position: 'relative',
+    paddingBottom: 4,
   },
   badge: {
-    background: '#d4a72c',
-    color: '#1a1208',
+    background: 'linear-gradient(135deg, #ffd700, #b8860b)',
+    color: '#050505',
     borderRadius: '50%',
-    width: 20,
-    height: 20,
+    width: 22,
+    height: 22,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 11,
-    fontWeight: 700,
+    fontWeight: 900,
+    border: '2px solid rgba(0,0,0,0.5)',
+    transition: 'var(--transition)',
   },
 };

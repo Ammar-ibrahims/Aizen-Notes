@@ -1,30 +1,67 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div style={styles.card}>
+    <div 
+      className="glass"
+      style={{
+        ...styles.card,
+        transform: isHovered ? 'translateY(-20px) rotateX(2deg) rotateY(2deg)' : 'translateY(0) rotateX(0deg) rotateY(0deg)',
+        boxShadow: isHovered ? 'var(--shadow-3d-card-hover)' : 'var(--shadow-3d-card)',
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <Link to={`/product/${product.id}`}>
         <div style={styles.imageWrap}>
           <img
             src={product.image_url || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=400'}
             alt={product.name}
-            style={styles.image}
+            style={{
+              ...styles.image,
+              transform: isHovered ? 'scale(1.15) rotate(2deg)' : 'scale(1) rotate(0deg)',
+            }}
           />
-          <div style={styles.category}>{product.category}</div>
+          <div style={styles.overlay}></div>
+          <div style={{
+            ...styles.category,
+            transform: isHovered ? 'translateZ(30px)' : 'translateZ(0)',
+          }}>{product.category}</div>
         </div>
       </Link>
       <div style={styles.info}>
-        <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
-          <h3 style={styles.name}>{product.name}</h3>
-        </Link>
-        <p style={styles.desc}>{product.description?.substring(0, 80)}...</p>
+        <div style={{ transform: isHovered ? 'translateZ(20px)' : 'translateZ(0)', transition: 'var(--transition)' }}>
+          <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
+            <h3 style={styles.name}>{product.name}</h3>
+          </Link>
+          <p style={styles.desc}>{product.description?.substring(0, 80)}...</p>
+        </div>
         <div style={styles.footer}>
-          <span style={styles.price}>${parseFloat(product.price).toFixed(2)}</span>
-          <button style={styles.btn} onClick={() => addToCart(product)}>Add to Cart</button>
+          <span style={{
+            ...styles.price,
+            transform: isHovered ? 'translateZ(30px) scale(1.1)' : 'translateZ(0) scale(1)',
+          }}>${parseFloat(product.price).toFixed(2)}</span>
+          <button 
+            className="btn-3d"
+            style={{
+              padding: '10px 20px',
+              fontSize: 12,
+              background: 'linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05))',
+              transform: isHovered ? 'translateZ(40px) scale(1.05)' : 'translateZ(0) scale(1)',
+              boxShadow: isHovered ? 'var(--shadow-3d-btn-hover)' : 'var(--shadow-3d-btn)',
+            }} 
+            onClick={(e) => {
+              e.preventDefault(); // In case card is wrapped in a link later
+              addToCart(product);
+            }}
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
@@ -33,80 +70,112 @@ export default function ProductCard({ product }) {
 
 const styles = {
   card: {
-    background: '#fff',
-    borderRadius: 12,
+    borderRadius: 'var(--radius-lg)',
     overflow: 'hidden',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
-    transition: 'transform 0.2s, box-shadow 0.2s',
+    transition: 'var(--transition)',
     display: 'flex',
     flexDirection: 'column',
+    minHeight: 460,
+    position: 'relative',
+    transformStyle: 'preserve-3d',
+    perspective: '1000px',
   },
   imageWrap: {
     position: 'relative',
-    height: 220,
+    height: 280,
     overflow: 'hidden',
-    background: '#f5f0e8',
+    background: 'radial-gradient(circle at center, rgba(255,215,0,0.1), transparent)',
+    borderBottom: '1px solid rgba(255,255,255,0.05)',
   },
   image: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    transition: 'transform 0.3s',
+    transition: 'transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.8) 100%)',
+    pointerEvents: 'none',
   },
   category: {
     position: 'absolute',
-    top: 12,
-    left: 12,
-    background: 'rgba(26, 18, 8, 0.75)',
-    color: '#d4a72c',
-    fontSize: 11,
-    letterSpacing: '0.1em',
+    top: 20,
+    left: 20,
+    background: 'rgba(0,0,0,0.6)',
+    backdropFilter: 'blur(10px)',
+    color: 'var(--color-primary)',
+    fontSize: 10,
+    letterSpacing: '0.2em',
     textTransform: 'uppercase',
-    padding: '4px 10px',
-    borderRadius: 4,
-    fontWeight: 600,
+    padding: '8px 16px',
+    borderRadius: 'var(--radius-pill)',
+    fontWeight: 800,
+    border: '1px solid rgba(255,215,0,0.2)',
+    boxShadow: '0 8px 16px rgba(0,0,0,0.6)',
+    transition: 'var(--transition)',
   },
   info: {
-    padding: '16px 18px 20px',
+    padding: '30px 24px',
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
-    gap: 8,
+    gap: 16,
+    background: 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%)',
+    transformStyle: 'preserve-3d',
   },
   name: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: 18,
-    fontWeight: 600,
-    color: '#1a1208',
+    fontFamily: "var(--font-serif)",
+    fontSize: 26,
+    fontWeight: 800,
+    color: '#fff',
+    letterSpacing: '-0.01em',
+    textShadow: '0 4px 12px rgba(0,0,0,0.8)',
+    marginBottom: 8,
   },
   desc: {
-    color: '#6b5c3e',
-    fontSize: 13,
-    lineHeight: 1.5,
+    color: 'var(--color-text-muted)',
+    fontSize: 14,
+    lineHeight: 1.6,
     flex: 1,
+    fontWeight: 400,
   },
   footer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 8,
+    marginTop: 10,
+    paddingTop: 20,
+    borderTop: '1px solid rgba(255,255,255,0.05)',
+    transformStyle: 'preserve-3d',
   },
   price: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: 20,
-    fontWeight: 700,
-    color: '#b8860b',
+    fontFamily: "var(--font-serif)",
+    fontSize: 28,
+    fontWeight: 900,
+    background: 'linear-gradient(135deg, #ffd700, #aa8800)',
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    textShadow: '0 4px 12px rgba(0,0,0,0.4)',
+    transition: 'var(--transition)',
+    transformOrigin: 'left center',
   },
   btn: {
-    background: '#1a1208',
-    color: '#d4a72c',
+    background: 'linear-gradient(135deg, #ffd700 0%, #aa8800 100%)',
+    color: '#050505',
     border: 'none',
-    borderRadius: 6,
-    padding: '8px 16px',
-    fontSize: 13,
-    fontWeight: 600,
-    letterSpacing: '0.04em',
+    borderRadius: 'var(--radius-pill)',
+    padding: '12px 24px',
+    fontSize: 12,
+    fontWeight: 800,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
     cursor: 'pointer',
-    transition: 'background 0.2s',
+    transition: 'var(--transition)',
   },
 };

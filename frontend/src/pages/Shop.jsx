@@ -31,10 +31,12 @@ export default function Shop() {
 
   return (
     <div style={styles.page}>
-      <div className="container">
+      <div style={styles.ambientGlow1}></div>
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <div style={styles.header}>
           <h1 style={styles.title}>Our Perfumes</h1>
-          <p style={styles.sub}>Discover your signature scent</p>
+          <div style={styles.titleUnderline}></div>
+          <p style={styles.sub}>Discover your signature scent in 3D</p>
         </div>
 
         <div style={styles.filters}>
@@ -50,11 +52,11 @@ export default function Shop() {
         </div>
 
         {loading ? (
-          <div style={styles.loading}>Loading fragrances...</div>
+          <div style={styles.loading}>Loading 3D Experience...</div>
         ) : filtered.length === 0 ? (
           <div style={styles.loading}>No products in this category.</div>
         ) : (
-          <div style={styles.grid}>
+          <div className="grid" style={styles.grid}>
             {filtered.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         )}
@@ -65,56 +67,85 @@ export default function Shop() {
 
 const styles = {
   page: {
-    padding: '60px 0 80px',
+    padding: '80px 0 120px',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  ambientGlow1: {
+    position: 'absolute',
+    top: '0',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '80vw',
+    height: '600px',
+    background: 'radial-gradient(circle, rgba(255,215,0,0.03) 0%, transparent 60%)',
+    filter: 'blur(80px)',
+    zIndex: 0,
   },
   header: {
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 60,
   },
   title: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: 40,
-    fontWeight: 700,
-    color: '#1a1208',
-    marginBottom: 8,
+    fontFamily: "var(--font-serif)",
+    fontWeight: 800,
+    color: 'var(--color-text)',
+    marginBottom: 16,
+    textShadow: '0 4px 20px rgba(0,0,0,0.5)',
+  },
+  titleUnderline: {
+    width: 80,
+    height: 4,
+    background: 'linear-gradient(90deg, transparent, var(--color-primary), transparent)',
+    margin: '0 auto 24px',
+    borderRadius: 2,
   },
   sub: {
-    color: '#6b5c3e',
-    fontSize: 16,
+    color: 'var(--color-text-muted)',
+    fontSize: 18,
+    letterSpacing: '0.05em',
   },
   filters: {
     display: 'flex',
-    gap: 12,
+    gap: 16,
     flexWrap: 'wrap',
     justifyContent: 'center',
-    marginBottom: 48,
+    marginBottom: 60,
   },
   filterBtn: {
-    border: '1px solid #e8e0d0',
-    background: '#fff',
-    color: '#6b5c3e',
-    padding: '8px 20px',
-    borderRadius: 20,
+    border: '1px solid rgba(255,215,0,0.2)',
+    background: 'rgba(255,215,0,0.03)',
+    color: 'var(--color-text)',
+    padding: '12px 28px',
+    borderRadius: 'var(--radius-pill)',
     fontSize: 13,
-    fontWeight: 500,
+    fontWeight: 700,
     cursor: 'pointer',
-    letterSpacing: '0.04em',
-    transition: 'all 0.2s',
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
+    transition: 'var(--transition)',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
+    backdropFilter: 'blur(10px)',
   },
   filterActive: {
-    background: '#1a1208',
-    color: '#d4a72c',
-    border: '1px solid #1a1208',
+    background: 'linear-gradient(135deg, rgba(255,215,0,0.2), transparent)',
+    color: 'var(--color-primary)',
+    border: '1px solid rgba(255,215,0,0.4)',
+    textShadow: '0 0 10px rgba(255,215,0,0.5)',
+    boxShadow: '0 15px 40px rgba(255,215,0,0.15)',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: 28,
+    gap: 40,
+    perspective: 1500,
   },
   loading: {
     textAlign: 'center',
-    color: '#6b5c3e',
-    padding: 80,
-    fontSize: 16,
+    color: 'var(--color-primary)',
+    padding: 100,
+    fontSize: 20,
+    fontWeight: 600,
+    letterSpacing: '0.1em',
+    animation: 'pulse-glow 2s infinite',
   },
 };
