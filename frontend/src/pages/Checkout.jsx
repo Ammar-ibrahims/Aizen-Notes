@@ -1,0 +1,222 @@
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import { useCart } from '../context/CartContext';
+
+export default function Checkout() {
+  const { cart, totalPrice, clearCart } = useCart();
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ name: '', email: '' });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  if (cart.length === 0 && !success) {
+    return (
+      <div style={styles.empty}>
+        <h2 style={styles.emptyTitle}>Nothing to checkout</h2>
+        <Link to="/shop" style={styles.btn}>Shop Now</Link>
+      </div>
+    );
+  }
+
+  if (success) {
+    return (
+      <div style={styles.empty}>
+        <div style={styles.successIcon}>✓</div>
+        <h2 style={styles.successTitle}>Order Placed!</h2>
+        <p style={styles.successText}>Thank you for your order. We'll send a confirmation to your email.</p>
+        <Link to="/shop" style={styles.btn}>Continue Shopping</Link>
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.name || !form.email) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      await axios.post('/api/orders', {
+        customer_name: form.name,
+        customer_email: form.email,
+        items: cart.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      });
+      clearCart();
+      setSuccess(true);
+    } catch {
+      setError('Failed to place order. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={styles.page}>
+      <div className="container">
+        <h1 style={styles.title}>Checkout</h1>
+        <div style={styles.layout}>
+          <form onSubmit={handleSubmit} style={styles.form}>
+            <h2 style={styles.formTitle}>Your Details</h2>
+            <div style={styles.field}>
+              <label style={styles.label}>Full Name</label>
+              <input
+                style={styles.input}
+                type="text"
+                placeholder="Your full name"
+                value={form.name}
+                onChange={e => setForm({ ...form, name: e.target.value })}
+              />
+            </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Email Address</label>
+              <input
+                style={styles.input}
+                type="email"
+                placeholder="your@email.com"
+                value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })}
+              />
+            </div>
+            {error && <p style={styles.error}>{error}</p>}
+            <button type="submit" style={styles.submitBtn} disabled={loading}>
+              {loading ? 'Placing Order...' : `Place Order — $${totalPrice.toFixed(2)}`}
+            </button>
+          </form>
+
+          <div style={styles.orderSummary}>
+            <h2 style={styles.formTitle}>Order Summary</h2>
+            {cart.map(item => (
+              <div key={item.id} style={styles.orderItem}>
+                <span>{item.name} × {item.quantity}</span>
+                <span>${(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+            <div style={styles.divider} />
+            <div style={{ ...styles.orderItem, fontWeight: 700, fontSize: 16 }}>
+              <span>Total</span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const styles = {
+  page: { padding: '60px 0 80px' },
+  title: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: 36,
+    color: '#1a1208',
+    marginBottom: 40,
+  },
+  layout: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 380px',
+    gap: 40,
+    alignItems: 'start',
+  },
+  form: {
+    background: '#fff',
+    borderRadius: 12,
+    padding: '32px 28px',
+    boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 20,
+  },
+  formTitle: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: 22,
+    color: '#1a1208',
+  },
+  field: { display: 'flex', flexDirection: 'column', gap: 6 },
+  label: { fontSize: 13, fontWeight: 600, color: '#2d2416', letterSpacing: '0.04em' },
+  input: {
+    border: '1px solid #e8e0d0',
+    borderRadius: 8,
+    padding: '12px 14px',
+    fontSize: 15,
+    color: '#1a1208',
+    outline: 'none',
+    fontFamily: "'Inter', sans-serif",
+  },
+  error: { color: '#c44', fontSize: 14 },
+  submitBtn: {
+    background: '#1a1208',
+    color: '#d4a72c',
+    border: 'none',
+    borderRadius: 8,
+    padding: '16px',
+    fontSize: 15,
+    fontWeight: 700,
+    letterSpacing: '0.06em',
+    cursor: 'pointer',
+    marginTop: 4,
+  },
+  orderSummary: {
+    background: '#fff',
+    borderRadius: 12,
+    padding: '28px 24px',
+    boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 14,
+  },
+  orderItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: 15,
+    color: '#2d2416',
+  },
+  divider: { borderTop: '1px solid #e8e0d0' },
+  empty: {
+    textAlign: 'center',
+    padding: '100px 24px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 20,
+  },
+  emptyTitle: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: 32,
+    color: '#1a1208',
+  },
+  successIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: '50%',
+    background: '#3a7a3a',
+    color: '#fff',
+    fontSize: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  successTitle: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: 36,
+    color: '#1a1208',
+  },
+  successText: { color: '#6b5c3e', fontSize: 16, maxWidth: 400 },
+  btn: {
+    background: '#1a1208',
+    color: '#d4a72c',
+    padding: '12px 28px',
+    borderRadius: 8,
+    fontWeight: 700,
+    fontSize: 14,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+  },
+};

@@ -1,0 +1,23 @@
+{
+  "name": "aizen-notes",
+  "version": "1.0.0",
+  "description": "Aizen Notes Perfume Store",
+  "scripts": {
+    "dev": "npm run migrate && concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && node src/index.js",
+    "frontend": "cd frontend && npm run dev",
+    "migrate": "cd backend && node src/migrate.js",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "nodemon": "^3.1.14",
+    "pg": "^8.20.0"
+  }
+}
