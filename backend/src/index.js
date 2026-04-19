@@ -8,9 +8,20 @@ const ordersRouter = require('./routes/orders');
 const authRouter = require('./routes/authRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:5000',
+    'http://localhost:5001',
+    'https://www.aizennotes.com',
+    'https://aizennotes.com',
+    /\.vercel\.app$/ // Matches any vercel preview deployments
+  ],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
