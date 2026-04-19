@@ -3,18 +3,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState(() => {
-    try {
-      const saved = localStorage.getItem('aizen-cart');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [cart, setCart] = useState([]);
 
-  useEffect(() => {
-    localStorage.setItem('aizen-cart', JSON.stringify(cart));
-  }, [cart]);
+  // Removed localStorage persistence so cart is empty on refresh
+
 
   const addToCart = (product) => {
     setCart(prev => {

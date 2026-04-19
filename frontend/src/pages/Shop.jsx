@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
+import api from '../api';
 import ProductCard from '../components/ProductCard';
 
 const CATEGORIES = ['All', 'Oriental', 'Fresh', 'Woody', 'Musky', 'Floral'];
@@ -11,7 +12,7 @@ export default function Shop() {
   const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
-    axios.get('/api/products')
+    api.get('/api/products')
       .then(res => {
         setProducts(res.data);
         setFiltered(res.data);

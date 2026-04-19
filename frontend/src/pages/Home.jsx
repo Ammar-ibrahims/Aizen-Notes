@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import ProductCard from '../components/ProductCard';
 
 export default function Home() {
@@ -8,7 +7,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/api/products')
+    api.get('/api/products')
       .then(res => setFeatured(res.data.slice(0, 3)))
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -20,9 +19,9 @@ export default function Home() {
         <div className="hero-content">
           <p style={styles.heroEyebrow}>Luxury Fragrance</p>
           <h1 className="hero-title" style={styles.heroTitle}>Aizen Notes<br /><span className="font-script" style={styles.heroTitleHighlight}>Pulse</span></h1>
-          <p style={styles.heroSub}>Experience the essence of luxury. Each bottle tells a story of craftsmanship and elegance in a 3D immersive world.</p>
+          <p style={styles.heroSub}>Experience the essence of luxury. Each bottle tells a story of craftsmanship and elegance with 40% Oil concentration.</p>
           <div className="hero-btns" style={styles.heroBtns}>
-            <Link to="/shop" className="btn-3d" style={{ padding: '16px 32px', fontSize: '14px' }}>Discover Now</Link>
+            <Link to="/shop" className="btn-3d" style={{ padding: '16px 32px', fontSize: '14px' }}>Shop Now</Link>
           </div>
         </div>
         <div className="hero-image-section">

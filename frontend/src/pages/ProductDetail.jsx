@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { useCart } from '../context/CartContext';
 
 export default function ProductDetail() {
@@ -8,11 +8,15 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
   const { addToCart } = useCart();
 
   useEffect(() => {
-    axios.get(`/api/products/${id}`)
-      .then(res => setProduct(res.data))
+    api.get(`/api/products/${id}`)
+      .then(res => {
+        setProduct(res.data);
+        setSelectedImage(res.data.image_url);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [id]);
@@ -35,19 +39,39 @@ export default function ProductDetail() {
         <Link to="/shop" style={styles.back}>← Back to Shop</Link>
         
         <div className="product-layout">
-          <div style={styles.imageWrap}>
-            <img
-              src={product.image_url || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=600'}
-              alt={product.name}
-              style={styles.image}
-            />
+          <div style={styles.imageSection}>
+            <div style={styles.imageWrap}>
+              <img
+                src={selectedImage || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=600'}
+                alt={product.name}
+                style={styles.image}
+              />
+            </div>
+            
+            {product.images && product.images.length > 1 && (
+              <div style={styles.thumbnails}>
+                {product.images.map((img, i) => (
+                  <div 
+                    key={i} 
+                    style={{
+                      ...styles.thumbWrap,
+                      borderColor: selectedImage === img ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)',
+                      boxShadow: selectedImage === img ? '0 0 15px var(--color-primary)' : 'none'
+                    }}
+                    onClick={() => setSelectedImage(img)}
+                  >
+                    <img src={img} alt={`Thumb ${i}`} style={styles.thumbImg} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           
           <div className="glass" style={styles.info}>
             <span style={styles.category}>{product.category}</span>
             <h1 style={styles.name}>{product.name}</h1>
             <div style={styles.titleUnderline}></div>
-            <p style={styles.price}>${parseFloat(product.price).toFixed(2)}</p>
+            <p style={styles.price}>{parseFloat(product.price).toFixed(2)} PKR</p>
             <p style={styles.desc}>{product.description}</p>
             
             <div style={styles.stock}>
@@ -186,6 +210,7 @@ const styles = {
     fontSize: 16,
     lineHeight: 1.8,
     marginBottom: 32,
+    whiteSpace: 'pre-wrap',
   },
   stock: { 
     padding: '12px 16px',
@@ -202,4 +227,30 @@ const styles = {
     fontSize: 14,
     width: '100%',
   },
+  imageSection: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 20
+  },
+  thumbnails: {
+    display: 'flex',
+    gap: 12,
+    flexWrap: 'wrap',
+    justifyContent: 'center'
+  },
+  thumbWrap: {
+    width: 70,
+    height: 70,
+    borderRadius: 12,
+    overflow: 'hidden',
+    cursor: 'pointer',
+    border: '2px solid transparent',
+    transition: 'var(--transition)',
+    background: 'rgba(0,0,0,0.3)',
+  },
+  thumbImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover'
+  }
 };

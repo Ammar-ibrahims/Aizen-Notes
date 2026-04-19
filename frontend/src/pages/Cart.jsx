@@ -31,7 +31,7 @@ export default function Cart() {
                 <div style={styles.itemInfo}>
                   <h3 style={styles.itemName}>{item.name}</h3>
                   <p style={styles.itemCategory}>{item.category}</p>
-                  <p style={styles.itemPrice}>${parseFloat(item.price).toFixed(2)}</p>
+                  <p style={styles.itemPrice}>{parseFloat(item.price).toFixed(2)} PKR</p>
                 </div>
                 <div style={styles.qty}>
                   <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
@@ -39,7 +39,7 @@ export default function Cart() {
                   <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
                 </div>
                 <div style={styles.itemTotal}>
-                  ${(parseFloat(item.price) * item.quantity).toFixed(2)}
+                  {(parseFloat(item.price) * item.quantity).toFixed(2)} PKR
                 </div>
                 <button style={styles.remove} onClick={() => removeFromCart(item.id)}>✕</button>
               </div>
@@ -50,7 +50,7 @@ export default function Cart() {
             <h2 style={styles.sumTitle}>Order Summary</h2>
             <div style={styles.sumRow}>
               <span>Subtotal</span>
-              <span>${totalPrice.toFixed(2)}</span>
+              <span>{totalPrice.toFixed(2)} PKR</span>
             </div>
             <div style={styles.sumRow}>
               <span>Shipping</span>
@@ -59,7 +59,7 @@ export default function Cart() {
             <div style={styles.divider} />
             <div style={{ ...styles.sumRow, fontWeight: 700, fontSize: 18 }}>
               <span>Total</span>
-              <span>${totalPrice.toFixed(2)}</span>
+              <span>{totalPrice.toFixed(2)} PKR</span>
             </div>
             <Link to="/checkout" style={styles.checkoutBtn}>Proceed to Checkout</Link>
           </div>

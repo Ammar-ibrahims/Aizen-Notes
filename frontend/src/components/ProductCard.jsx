@@ -45,7 +45,7 @@ export default function ProductCard({ product }) {
           <span style={{
             ...styles.price,
             transform: isHovered ? 'translateZ(30px) scale(1.1)' : 'translateZ(0) scale(1)',
-          }}>${parseFloat(product.price).toFixed(2)}</span>
+          }}>{parseFloat(product.price).toFixed(2)} PKR</span>
           <button 
             className="btn-3d"
             style={{

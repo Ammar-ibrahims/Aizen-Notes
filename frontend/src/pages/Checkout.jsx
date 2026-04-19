@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { useCart } from '../context/CartContext';
 
 export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '' });
+  const [form, setForm] = useState({ name: '', email: '', city: '', state: '', address: '', phone_number: '' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -31,18 +31,33 @@ export default function Checkout() {
     );
   }
 
+  const handlePhoneChange = (e) => {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length > 11) val = val.slice(0, 11);
+    if (val.length > 4) val = `${val.slice(0, 4)}-${val.slice(4)}`;
+    setForm({ ...form, phone_number: val });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email) {
+    if (!form.name || !form.email || !form.city || !form.state || !form.address || !form.phone_number) {
       setError('Please fill in all fields.');
+      return;
+    }
+    if (form.phone_number.length !== 12) {
+      setError('Please enter a valid 11-digit phone number.');
       return;
     }
     setLoading(true);
     setError('');
     try {
-      await axios.post('/api/orders', {
+      await api.post('/api/orders', {
         customer_name: form.name,
         customer_email: form.email,
+        city: form.city,
+        state: form.state,
+        address: form.address,
+        phone_number: form.phone_number,
         items: cart.map(item => ({
           product_id: item.id,
           quantity: item.quantity,
@@ -85,9 +100,27 @@ export default function Checkout() {
                 onChange={e => setForm({ ...form, email: e.target.value })}
               />
             </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Phone Number</label>
+              <input required style={styles.input} type="tel" placeholder="0300-0000000" value={form.phone_number} onChange={handlePhoneChange} />
+            </div>
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <div style={{...styles.field, flex: 1}}>
+                <label style={styles.label}>City</label>
+                <input required style={styles.input} placeholder="Lahore" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
+              </div>
+              <div style={{...styles.field, flex: 1}}>
+                <label style={styles.label}>State / Province</label>
+                <input required style={styles.input} placeholder="Punjab" value={form.state} onChange={e => setForm({ ...form, state: e.target.value })} />
+              </div>
+            </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Delivery Address</label>
+              <textarea required style={{...styles.input, minHeight: '80px', resize: 'vertical'}} placeholder="Street address, apartment, suite, etc." value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} />
+            </div>
             {error && <p style={styles.error}>{error}</p>}
             <button type="submit" style={styles.submitBtn} disabled={loading}>
-              {loading ? 'Placing Order...' : `Place Order — $${totalPrice.toFixed(2)}`}
+              {loading ? 'Placing Order...' : `Place Order — ${totalPrice.toFixed(2)} PKR`}
             </button>
           </form>
 
@@ -96,13 +129,13 @@ export default function Checkout() {
             {cart.map(item => (
               <div key={item.id} style={styles.orderItem}>
                 <span>{item.name} × {item.quantity}</span>
-                <span>${(item.price * item.quantity).toFixed(2)}</span>
+                <span>{(item.price * item.quantity).toFixed(2)} PKR</span>
               </div>
             ))}
             <div style={styles.divider} />
             <div style={{ ...styles.orderItem, fontWeight: 700, fontSize: 16 }}>
               <span>Total</span>
-              <span>${totalPrice.toFixed(2)}</span>
+              <span>{totalPrice.toFixed(2)} PKR</span>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 const pool = require('./db');
+const bcrypt = require('bcryptjs');
 
 async function migrate() {
   const client = await pool.connect();
@@ -11,6 +12,7 @@ async function migrate() {
         price DECIMAL(10, 2) NOT NULL,
         category VARCHAR(100),
         image_url TEXT,
+        images TEXT[],
         stock INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT NOW()
       );
@@ -19,6 +21,10 @@ async function migrate() {
         id SERIAL PRIMARY KEY,
         customer_name VARCHAR(255) NOT NULL,
         customer_email VARCHAR(255) NOT NULL,
+        city VARCHAR(255),
+        state VARCHAR(255),
+        address TEXT,
+        phone_number VARCHAR(100),
         total_amount DECIMAL(10, 2) NOT NULL,
         status VARCHAR(50) DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT NOW()
@@ -30,6 +36,13 @@ async function migrate() {
         product_id INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL,
         price DECIMAL(10, 2) NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS admins (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
       );
     `);
 
@@ -45,6 +58,17 @@ async function migrate() {
         ('Desert Gold', 'A warm, spicy journey through frankincense, saffron, and warm amber resin.', 109.99, 'Oriental', 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400', 40)
       `);
       console.log('Sample products seeded.');
+    }
+
+    const existingAdmin = await client.query('SELECT COUNT(*) FROM admins');
+    if (parseInt(existingAdmin.rows[0].count) === 0) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash('admin123', salt);
+      await client.query(
+        'INSERT INTO admins (username, password_hash) VALUES ($1, $2)',
+        ['admin', hash]
+      );
+      console.log('Admin user seeded (admin / admin123).');
     }
 
     console.log('Database migration complete.');

@@ -52,6 +52,19 @@ export default function Footer() {
             >
               Cart
             </Link>
+            <Link 
+              to="/admin" 
+              style={{
+                ...styles.link,
+                color: hoveredLink === 'admin' ? 'var(--color-primary)' : 'var(--color-text)',
+                transform: hoveredLink === 'admin' ? 'translateY(-2px)' : 'translateY(0)',
+                textShadow: hoveredLink === 'admin' ? '0 0 10px rgba(255,215,0,0.5)' : 'none',
+              }}
+              onMouseEnter={() => setHoveredLink('admin')}
+              onMouseLeave={() => setHoveredLink(null)}
+            >
+              Admin
+            </Link>
           </div>
           <p style={styles.copy}>&copy; {new Date().getFullYear()} Aizen Notes. All rights reserved.</p>
         </div>
