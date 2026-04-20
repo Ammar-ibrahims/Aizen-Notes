@@ -14,8 +14,9 @@ export default function Shop() {
   useEffect(() => {
     api.get('/api/products')
       .then(res => {
-        setProducts(res.data);
-        setFiltered(res.data);
+        const data = Array.isArray(res.data) ? res.data : [];
+        setProducts(data);
+        setFiltered(data);
       })
       .catch(console.error)
       .finally(() => setLoading(false));

@@ -9,7 +9,10 @@ export default function Home() {
 
   useEffect(() => {
     api.get('/api/products')
-      .then(res => setFeatured(res.data.slice(0, 3)))
+      .then(res => {
+        const data = Array.isArray(res.data) ? res.data : [];
+        setFeatured(data.slice(0, 3));
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
