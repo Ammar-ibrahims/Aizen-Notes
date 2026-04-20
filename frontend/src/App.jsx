@@ -17,6 +17,7 @@ import AdminOrders from './pages/AdminOrders';
 import AdminOrderDetail from './pages/AdminOrderDetail';
 import AdminAwayLogger from './components/AdminAwayLogger';
 import FloatingCart from './components/FloatingCart';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
       <AuthProvider>
         <CartProvider>
           <Router>
+            <ScrollToTop />
             <AdminAwayLogger />
             <Navbar />
             <FloatingCart />
