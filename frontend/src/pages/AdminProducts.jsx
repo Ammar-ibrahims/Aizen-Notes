@@ -45,10 +45,17 @@ export default function AdminProducts() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     try {
-      await api.delete(`/api/products/${id}`);
+      const token = localStorage.getItem('adminToken');
+      console.log('Token present:', !!token, '| Token value:', token);
+      const response = await api.delete(`/api/products/${id}`);
+      console.log('Delete response:', response.data);
       setProducts(products.filter(p => p.id !== id));
+      alert('Product deleted successfully!');
     } catch (err) {
-      alert('Failed to delete product');
+      const errorMsg = err.response?.data?.error || err.message || 'Unknown error';
+      const statusCode = err.response?.status || 'No Status';
+      console.error('Delete error:', err.response);
+      alert(`Failed to delete product.\nStatus: ${statusCode}\nError: ${errorMsg}`);
     }
   };
 
