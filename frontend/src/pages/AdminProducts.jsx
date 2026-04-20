@@ -136,6 +136,17 @@ export default function AdminProducts() {
     });
   };
 
+  const handleImageError = (e) => {
+    e.target.src = 'https://placehold.co/400x400/1a1a1a/gold?text=Loading+Image...';
+    // Optionally retry after a delay for CDN propagation
+    setTimeout(() => {
+      const originalSrc = e.target.attributes['data-original-src']?.value;
+      if (originalSrc && e.target.src !== originalSrc) {
+        e.target.src = originalSrc;
+      }
+    }, 2000);
+  };
+
   const addVariant = () => {
     setFormData(prev => ({
       ...prev,
@@ -214,7 +225,12 @@ export default function AdminProducts() {
                   <tr key={product.id} style={styles.tr}>
                     <td style={styles.td}>
                       <div style={styles.productNameCell}>
-                        <img src={product.image_url} alt={product.name} style={styles.thumbnail} />
+                        <img 
+                          src={product.image_url} 
+                          alt={product.name} 
+                          style={styles.thumbnail} 
+                          onError={(e) => { e.target.src = 'https://placehold.co/100x100/1a1a1a/gold?text=Error'; }}
+                        />
                         <strong>{product.name}</strong>
                       </div>
                     </td>
@@ -273,9 +289,15 @@ export default function AdminProducts() {
                 </div>
                 
                 <div style={styles.imageGallery}>
-                  {formData.images.map((url, idx) => (
+                   {formData.images.map((url, idx) => (
                     <div key={idx} style={styles.imagePreview}>
-                      <img src={url} alt={`Preview ${idx}`} style={styles.previewImg} />
+                      <img 
+                        src={url} 
+                        data-original-src={url}
+                        alt={`Preview ${idx}`} 
+                        style={styles.previewImg} 
+                        onError={handleImageError} 
+                      />
                       <button type="button" onClick={() => removeImage(idx)} style={styles.removeImageBtn}>✕</button>
                       {idx === 0 && <span style={styles.mainBadge}>Main</span>}
                     </div>
