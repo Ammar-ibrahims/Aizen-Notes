@@ -16,6 +16,7 @@ import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
 import AdminOrderDetail from './pages/AdminOrderDetail';
 import AdminAwayLogger from './components/AdminAwayLogger';
+import FloatingCart from './components/FloatingCart';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           <Router>
             <AdminAwayLogger />
             <Navbar />
+            <FloatingCart />
             <main style={{ minHeight: 'calc(100vh - 160px)' }}>
               <Routes>
                 <Route path="/" element={<Home />} />

@@ -77,7 +77,7 @@ export default function Checkout() {
     <div style={styles.page}>
       <div className="container">
         <h1 style={styles.title}>Checkout</h1>
-        <div style={styles.layout}>
+        <div className="checkout-layout">
           <form onSubmit={handleSubmit} style={styles.form}>
             <h2 style={styles.formTitle}>Your Details</h2>
             <div style={styles.field}>
@@ -104,12 +104,12 @@ export default function Checkout() {
               <label style={styles.label}>Phone Number</label>
               <input required style={styles.input} type="tel" placeholder="0300-0000000" value={form.phone_number} onChange={handlePhoneChange} />
             </div>
-            <div style={{ display: 'flex', gap: '16px' }}>
-              <div style={{...styles.field, flex: 1}}>
+            <div className="checkout-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div style={styles.field}>
                 <label style={styles.label}>City</label>
                 <input required style={styles.input} placeholder="Lahore" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
               </div>
-              <div style={{...styles.field, flex: 1}}>
+              <div style={styles.field}>
                 <label style={styles.label}>State / Province</label>
                 <input required style={styles.input} placeholder="Punjab" value={form.state} onChange={e => setForm({ ...form, state: e.target.value })} />
               </div>

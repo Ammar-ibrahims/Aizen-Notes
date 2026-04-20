@@ -380,3 +380,122 @@ main {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, var(--color-secondary), var(--color-primary));
 }
+
+/* Responsive Cart & Checkout Layouts */
+.cart-layout, .checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .cart-layout, .checkout-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.cart-item {
+  background: var(--color-surface);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: var(--transition);
+}
+
+@media (max-width: 600px) {
+  .cart-item {
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .cart-item-img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  
+  .cart-item-info {
+    flex: 1;
+    min-width: 140px;
+  }
+  
+  .cart-item-controls {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--color-border);
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+  
+  .cart-hero-title {
+    font-size: 28px !important;
+    margin-bottom: 24px !important;
+  }
+}
+
+/* Floating Cart Styles */
+.floating-cart {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 64px;
+  height: 64px;
+  z-index: 1000;
+  cursor: pointer;
+  animation: float-3d 6s ease-in-out infinite;
+}
+
+.floating-cart-inner {
+  width: 100%;
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 50%;
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4), var(--shadow-3d-btn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 24px;
+  position: relative;
+  transition: var(--transition);
+}
+
+.floating-cart-inner:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--color-accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+@media (max-width: 480px) {
+  .floating-cart {
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+  }
+}

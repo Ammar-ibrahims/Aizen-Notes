@@ -19,29 +19,32 @@ export default function Cart() {
     <div style={styles.page}>
       <div className="container">
         <h1 style={styles.title}>Your Cart</h1>
-        <div style={styles.layout}>
+        <div className="cart-layout">
           <div style={styles.items}>
             {cart.map(item => (
-              <div key={item.id} style={styles.item}>
+              <div key={item.id} className="cart-item">
                 <img
                   src={item.image_url || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=120'}
                   alt={item.name}
+                  className="cart-item-img"
                   style={styles.img}
                 />
-                <div style={styles.itemInfo}>
+                <div className="cart-item-info" style={styles.itemInfo}>
                   <h3 style={styles.itemName}>{item.name}</h3>
                   <p style={styles.itemCategory}>{item.category}</p>
                   <p style={styles.itemPrice}>{parseFloat(item.price).toFixed(2)} PKR</p>
                 </div>
-                <div style={styles.qty}>
-                  <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                  <span style={styles.qtyNum}>{item.quantity}</span>
-                  <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                <div className="cart-item-controls">
+                  <div style={styles.qty}>
+                    <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                    <span style={styles.qtyNum}>{item.quantity}</span>
+                    <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                  </div>
+                  <div style={styles.itemTotal}>
+                    {(parseFloat(item.price) * item.quantity).toFixed(2)} PKR
+                  </div>
+                  <button style={styles.remove} onClick={() => removeFromCart(item.id)}>✕</button>
                 </div>
-                <div style={styles.itemTotal}>
-                  {(parseFloat(item.price) * item.quantity).toFixed(2)} PKR
-                </div>
-                <button style={styles.remove} onClick={() => removeFromCart(item.id)}>✕</button>
               </div>
             ))}
           </div>
