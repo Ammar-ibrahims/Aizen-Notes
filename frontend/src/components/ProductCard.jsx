@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { optimizeImage } from '../utils/cloudinary';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
@@ -20,7 +21,7 @@ export default function ProductCard({ product }) {
       <Link to={`/product/${product.id}`}>
         <div style={styles.imageWrap}>
           <img
-            src={product.image_url || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=400&q=80'}
+            src={optimizeImage(product.image_url) || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=400&q=80'}
             alt={product.name}
             loading="lazy"
             style={{

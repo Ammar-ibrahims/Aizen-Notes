@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api';
 import { useCart } from '../context/CartContext';
+import { optimizeImage } from '../utils/cloudinary';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -46,7 +47,7 @@ export default function ProductDetail() {
           <div style={styles.imageSection}>
             <div style={styles.imageWrap}>
               <img
-                src={selectedImage || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=600'}
+                src={optimizeImage(selectedImage) || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=600'}
                 alt={product.name}
                 style={styles.image}
               />
@@ -64,7 +65,7 @@ export default function ProductDetail() {
                     }}
                     onClick={() => setSelectedImage(img)}
                   >
-                    <img src={img} alt={`Thumb ${i}`} style={styles.thumbImg} />
+                    <img src={optimizeImage(img)} alt={`Thumb ${i}`} style={styles.thumbImg} />
                   </div>
                 ))}
               </div>

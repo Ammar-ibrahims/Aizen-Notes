@@ -3,6 +3,7 @@ import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useIdleTimeout } from '../hooks/useIdleTimeout';
+import { optimizeImage } from '../utils/cloudinary';
 
 export default function AdminProducts() {
   const { isAuthenticated, logout } = useAuth();
@@ -234,7 +235,7 @@ export default function AdminProducts() {
                     <td style={styles.td}>
                       <div style={styles.productNameCell}>
                         <img 
-                          src={product.image_url} 
+                          src={optimizeImage(product.image_url)} 
                           alt={product.name} 
                           style={styles.thumbnail} 
                           onError={(e) => { e.target.src = 'https://placehold.co/100x100/1a1a1a/gold?text=Error'; }}
@@ -300,8 +301,8 @@ export default function AdminProducts() {
                    {formData.images.map((url, idx) => (
                     <div key={idx} style={styles.imagePreview}>
                       <img 
-                        src={url} 
-                        data-original-src={url}
+                        src={optimizeImage(url)} 
+                        data-original-src={optimizeImage(url)}
                         alt={`Preview ${idx}`} 
                         style={styles.previewImg} 
                         onError={handleImageError} 
