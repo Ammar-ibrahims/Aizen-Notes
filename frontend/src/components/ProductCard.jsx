@@ -39,7 +39,6 @@ export default function ProductCard({ product }) {
           <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
             <h3 style={styles.name}>{product.name}</h3>
           </Link>
-          <p style={styles.desc}>{product.description?.substring(0, 80)}...</p>
         </div>
         <div style={styles.footer}>
           <span style={{
@@ -75,7 +74,7 @@ const styles = {
     transition: 'var(--transition)',
     display: 'flex',
     flexDirection: 'column',
-    minHeight: 460,
+    minHeight: 400,
     position: 'relative',
     transformStyle: 'preserve-3d',
     perspective: '1000px',
@@ -155,7 +154,7 @@ const styles = {
   },
   price: {
     fontFamily: "var(--font-serif)",
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 900,
     background: 'linear-gradient(135deg, #ffd700, #aa8800)',
     backgroundClip: 'text',
