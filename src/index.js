@@ -41,7 +41,10 @@ app.use(compression());
 // Cache middleware for static-like API responses (Products & Health)
 app.use((req, res, next) => {
   if (req.method === 'GET' && (req.url === '/api/products' || req.url === '/api/health')) {
-    res.set('Cache-Control', 'public, max-age=10'); // Cache for 10 seconds instead of 1 hour
+    // Disable all browser and proxy caching for these dynamic endpoints
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
   }
   next();
 });

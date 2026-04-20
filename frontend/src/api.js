@@ -1,9 +1,14 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_URL || 
+           (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000' 
+            : ''), // Empty string means it will use relative paths if on the same domain
   timeout: 10000,
 });
+
+console.log('API Client Initialized with BaseURL:', api.defaults.baseURL);
 
 // Attach JWT token to every request automatically
 api.interceptors.request.use((config) => {
