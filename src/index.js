@@ -27,7 +27,9 @@ const corsOptions = {
     'http://localhost:5001',
     'https://www.aizennotes.com',
     'https://aizennotes.com',
-    /\.vercel\.app$/ // Matches any vercel preview deployments
+    'http://www.aizennotes.com',
+    'http://aizennotes.com',
+    /\.vercel\.app$/ 
   ],
   credentials: true
 };
@@ -39,7 +41,7 @@ app.use(compression());
 // Cache middleware for static-like API responses (Products & Health)
 app.use((req, res, next) => {
   if (req.method === 'GET' && (req.url === '/api/products' || req.url === '/api/health')) {
-    res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
+    res.set('Cache-Control', 'public, max-age=10'); // Cache for 10 seconds instead of 1 hour
   }
   next();
 });
