@@ -20,8 +20,9 @@ export default function ProductCard({ product }) {
       <Link to={`/product/${product.id}`}>
         <div style={styles.imageWrap}>
           <img
-            src={product.image_url || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=400'}
+            src={product.image_url || 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=400&q=80'}
             alt={product.name}
+            loading="lazy"
             style={{
               ...styles.image,
               transform: isHovered ? 'scale(1.15) rotate(2deg)' : 'scale(1) rotate(0deg)',

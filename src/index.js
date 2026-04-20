@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 require('dotenv').config();
 const pool = require('./db');
 
@@ -33,6 +34,15 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(compression());
+
+// Cache middleware for static-like API responses (Products & Health)
+app.use((req, res, next) => {
+  if (req.method === 'GET' && (req.url === '/api/products' || req.url === '/api/health')) {
+    res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
+  }
+  next();
+});
 
 app.get('/api/health', async (req, res) => {
   try {
