@@ -147,9 +147,9 @@ export default function Checkout() {
 const styles = {
   page: { padding: '60px 0 80px' },
   title: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "var(--font-serif)",
     fontSize: 36,
-    color: '#1a1208',
+    color: 'var(--color-text)',
     marginBottom: 40,
   },
   layout: {
@@ -168,9 +168,9 @@ const styles = {
     gap: 20,
   },
   formTitle: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "var(--font-serif)",
     fontSize: 22,
-    color: '#1a1208',
+    color: 'var(--color-text)',
   },
   field: { display: 'flex', flexDirection: 'column', gap: 6 },
   label: { fontSize: 13, fontWeight: 600, color: '#2d2416', letterSpacing: '0.04em' },
@@ -221,9 +221,9 @@ const styles = {
     gap: 20,
   },
   emptyTitle: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "var(--font-serif)",
     fontSize: 32,
-    color: '#1a1208',
+    color: 'var(--color-text)',
   },
   successIcon: {
     width: 72,

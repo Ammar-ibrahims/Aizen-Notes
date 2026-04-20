@@ -75,9 +75,9 @@ export default function Cart() {
 const styles = {
   page: { padding: '60px 0 80px' },
   title: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "var(--font-serif)",
     fontSize: 36,
-    color: '#1a1208',
+    color: 'var(--color-text)',
     marginBottom: 40,
   },
   layout: {
@@ -106,9 +106,9 @@ const styles = {
   },
   itemInfo: { flex: 1 },
   itemName: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "var(--font-serif)",
     fontSize: 16,
-    color: '#1a1208',
+    color: 'var(--color-text)',
     marginBottom: 4,
   },
   itemCategory: { color: '#b8860b', fontSize: 12, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.08em' },
@@ -187,9 +187,9 @@ const styles = {
     gap: 16,
   },
   emptyTitle: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "var(--font-serif)",
     fontSize: 32,
-    color: '#1a1208',
+    color: 'var(--color-text)',
   },
   emptyText: { color: '#6b5c3e', fontSize: 16 },
   btn: {
