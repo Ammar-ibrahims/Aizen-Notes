@@ -5,10 +5,10 @@ const pool = require('../db');
 router.get('/', async (req, res) => {
   try {
     const { category } = req.query;
-    let query = 'SELECT * FROM products ORDER BY created_at DESC';
+    let query = 'SELECT * FROM products WHERE is_deleted = false ORDER BY created_at DESC';
     let params = [];
     if (category) {
-      query = 'SELECT * FROM products WHERE category = $1 ORDER BY created_at DESC';
+      query = 'SELECT * FROM products WHERE category = $1 AND is_deleted = false ORDER BY created_at DESC';
       params = [category];
     }
     const result = await pool.query(query, params);
@@ -23,7 +23,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.get('/:id', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM products WHERE id = $1', [req.params.id]);
+    const result = await pool.query('SELECT * FROM products WHERE id = $1 AND is_deleted = false', [req.params.id]);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Product not found' });
     }
@@ -69,7 +69,12 @@ router.put('/:id', authMiddleware, async (req, res) => {
 
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    const result = await pool.query('DELETE FROM products WHERE id = $1 RETURNING *', [req.params.id]);
+    // Soft delete: mark product as deleted rather than removing from DB
+    // This preserves referential integrity with historical orders
+    const result = await pool.query(
+      'UPDATE products SET is_deleted = true WHERE id = $1 RETURNING *',
+      [req.params.id]
+    );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Product not found' });
     }
