@@ -15,7 +15,7 @@ const sendAdminWhatsAppAlert = async (order, items) => {
   }
 
   // Format the items list
-  const itemsText = items.map(item => `• ${item.name} (x${item.quantity})`).join('\n');
+  const itemsText = items.map(item => `• ${item.name}${item.variant_ml ? ` (${item.variant_ml}ml)` : ''} (x${item.quantity})`).join('\n');
 
   // Build a professional, clear message
   const message = `

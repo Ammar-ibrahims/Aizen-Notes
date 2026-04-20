@@ -22,7 +22,8 @@ export default function AdminProducts() {
     category: '',
     image_url: '',
     images: [],
-    stock: ''
+    stock: '',
+    variants: []
   });
 
   useEffect(() => {
@@ -69,11 +70,12 @@ export default function AdminProducts() {
         category: product.category || '',
         image_url: product.image_url || '',
         images: product.images || [],
-        stock: product.stock || ''
+        stock: product.stock || '',
+        variants: product.variants || []
       });
     } else {
       setEditingProduct(null);
-      setFormData({ name: '', description: '', price: '', category: '', image_url: '', images: [], stock: '' });
+      setFormData({ name: '', description: '', price: '', category: '', image_url: '', images: [], stock: '', variants: [] });
     }
     setIsModalOpen(true);
   };
@@ -132,6 +134,28 @@ export default function AdminProducts() {
         image_url: newImages[0] || '' 
       };
     });
+  };
+
+  const addVariant = () => {
+    setFormData(prev => ({
+      ...prev,
+      variants: [...prev.variants, { ml: '', price: '' }]
+    }));
+  };
+
+  const updateVariant = (index, field, value) => {
+    setFormData(prev => {
+      const updated = [...prev.variants];
+      updated[index] = { ...updated[index], [field]: value };
+      return { ...prev, variants: updated };
+    });
+  };
+
+  const removeVariant = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      variants: prev.variants.filter((_, i) => i !== index)
+    }));
   };
 
   const handleChange = (e) => {
@@ -262,6 +286,41 @@ export default function AdminProducts() {
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Description</label>
                 <textarea required name="description" value={formData.description} onChange={handleChange} style={{...styles.input, minHeight: 100}} />
+              </div>
+
+              {/* Size Variants Section */}
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Size Variants (optional)</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {formData.variants.map((v, idx) => (
+                    <div key={idx} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                      <input
+                        type="number"
+                        placeholder="ML (e.g. 50)"
+                        value={v.ml}
+                        onChange={e => updateVariant(idx, 'ml', e.target.value)}
+                        style={{ ...styles.input, flex: 1 }}
+                      />
+                      <input
+                        type="number"
+                        placeholder="Price (PKR)"
+                        value={v.price}
+                        onChange={e => updateVariant(idx, 'price', e.target.value)}
+                        style={{ ...styles.input, flex: 1 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeVariant(idx)}
+                        style={{ background: 'rgba(255,50,50,0.2)', color: '#ff6b6b', border: '1px solid rgba(255,50,50,0.3)', borderRadius: 8, padding: '10px 14px', cursor: 'pointer', fontWeight: 800 }}
+                      >✕</button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addVariant}
+                    style={{ background: 'rgba(255,215,0,0.1)', color: 'var(--color-primary)', border: '1px dashed rgba(255,215,0,0.4)', borderRadius: 8, padding: '10px 20px', cursor: 'pointer', fontWeight: 700, fontSize: 13 }}
+                  >+ Add Size Variant</button>
+                </div>
               </div>
 
               <div style={styles.modalActions}>

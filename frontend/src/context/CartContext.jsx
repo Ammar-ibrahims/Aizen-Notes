@@ -1,36 +1,43 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
 
-  // Removed localStorage persistence so cart is empty on refresh
+  // addToCart accepts optional selectedVariant: { ml, price }
+  const addToCart = (product, selectedVariant = null) => {
+    const cartKey = selectedVariant ? `${product.id}-${selectedVariant.ml}` : `${product.id}`;
+    const itemPrice = selectedVariant ? parseFloat(selectedVariant.price) : parseFloat(product.price);
 
-
-  const addToCart = (product) => {
     setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      const existing = prev.find(item => item.cartKey === cartKey);
       if (existing) {
         return prev.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.cartKey === cartKey ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, {
+        ...product,
+        cartKey,
+        price: itemPrice,
+        variant_ml: selectedVariant ? selectedVariant.ml : null,
+        quantity: 1
+      }];
     });
   };
 
-  const removeFromCart = (productId) => {
-    setCart(prev => prev.filter(item => item.id !== productId));
+  const removeFromCart = (cartKey) => {
+    setCart(prev => prev.filter(item => item.cartKey !== cartKey));
   };
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = (cartKey, quantity) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(cartKey);
       return;
     }
     setCart(prev =>
-      prev.map(item => item.id === productId ? { ...item, quantity } : item)
+      prev.map(item => item.cartKey === cartKey ? { ...item, quantity } : item)
     );
   };
 

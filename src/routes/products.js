@@ -38,10 +38,10 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    const { name, description, price, category, image_url, stock, images } = req.body;
+    const { name, description, price, category, image_url, stock, images, variants } = req.body;
     const result = await pool.query(
-      'INSERT INTO products (name, description, price, category, image_url, images, stock) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-      [name, description, price, category, image_url, images || [], stock]
+      'INSERT INTO products (name, description, price, category, image_url, images, stock, variants) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+      [name, description, price, category, image_url, images || [], stock, JSON.stringify(variants || [])]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -52,10 +52,10 @@ router.post('/', authMiddleware, async (req, res) => {
 
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
-    const { name, description, price, category, image_url, stock, images } = req.body;
+    const { name, description, price, category, image_url, stock, images, variants } = req.body;
     const result = await pool.query(
-      'UPDATE products SET name = $1, description = $2, price = $3, category = $4, image_url = $5, images = $6, stock = $7 WHERE id = $8 RETURNING *',
-      [name, description, price, category, image_url, images || [], stock, req.params.id]
+      'UPDATE products SET name = $1, description = $2, price = $3, category = $4, image_url = $5, images = $6, stock = $7, variants = $8 WHERE id = $9 RETURNING *',
+      [name, description, price, category, image_url, images || [], stock, JSON.stringify(variants || []), req.params.id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Product not found' });

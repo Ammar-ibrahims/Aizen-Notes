@@ -18,7 +18,10 @@ const getTransporter = () => {
 const sendOrderEmail = async (order, items) => {
   const itemRows = items.map(item => `
     <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.name}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee;">
+        ${item.name}
+        ${item.variant_ml ? `<br><small style="color: #888;">Size: ${item.variant_ml}ml</small>` : ''}
+      </td>
       <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
       <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">${Number(item.price).toFixed(2)} PKR</td>
     </tr>

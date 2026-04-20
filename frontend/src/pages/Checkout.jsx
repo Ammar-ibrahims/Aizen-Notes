@@ -62,6 +62,7 @@ export default function Checkout() {
           product_id: item.id,
           quantity: item.quantity,
           price: item.price,
+          variant_ml: item.variant_ml
         })),
       });
       clearCart();
@@ -127,8 +128,8 @@ export default function Checkout() {
           <div style={styles.orderSummary}>
             <h2 style={styles.formTitle}>Order Summary</h2>
             {cart.map(item => (
-              <div key={item.id} style={styles.orderItem}>
-                <span>{item.name} × {item.quantity}</span>
+              <div key={item.cartKey} style={styles.orderItem}>
+                <span>{item.name} {item.variant_ml ? `(${item.variant_ml}ml)` : ''} × {item.quantity}</span>
                 <span>{(item.price * item.quantity).toFixed(2)} PKR</span>
               </div>
             ))}

@@ -9,6 +9,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -16,13 +17,16 @@ export default function ProductDetail() {
       .then(res => {
         setProduct(res.data);
         setSelectedImage(res.data.image_url);
+        if (res.data.variants && res.data.variants.length > 0) {
+          setSelectedVariant(res.data.variants[0]);
+        }
       })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [id]);
 
   const handleAdd = () => {
-    addToCart(product);
+    addToCart(product, selectedVariant);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -71,7 +75,36 @@ export default function ProductDetail() {
             <span style={styles.category}>{product.category}</span>
             <h1 style={styles.name}>{product.name}</h1>
             <div style={styles.titleUnderline}></div>
-            <p style={styles.price}>{parseFloat(product.price).toFixed(2)} PKR</p>
+            
+            <p style={styles.price}>
+              {selectedVariant 
+                ? parseFloat(selectedVariant.price).toFixed(2) 
+                : parseFloat(product.price).toFixed(2)} PKR
+            </p>
+
+            {product.variants && product.variants.length > 0 && (
+              <div style={styles.variantSection}>
+                <p style={styles.variantLabel}>Selected Size:</p>
+                <div style={styles.variantGrid}>
+                  {product.variants.map((v, i) => (
+                    <button
+                      key={i}
+                      style={{
+                        ...styles.variantBtn,
+                        borderColor: selectedVariant?.ml === v.ml ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)',
+                        background: selectedVariant?.ml === v.ml ? 'rgba(255,215,0,0.1)' : 'transparent',
+                        color: selectedVariant?.ml === v.ml ? 'var(--color-primary)' : '#fff',
+                        boxShadow: selectedVariant?.ml === v.ml ? '0 0 15px rgba(255,215,0,0.2)' : 'none',
+                      }}
+                      onClick={() => setSelectedVariant(v)}
+                    >
+                      {v.ml}ml
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <p style={styles.desc}>{product.description}</p>
             
             <div style={styles.stock}>
@@ -252,5 +285,31 @@ const styles = {
     width: '100%',
     height: '100%',
     objectFit: 'cover'
+  },
+  variantSection: {
+    marginBottom: 32,
+  },
+  variantLabel: {
+    color: 'var(--color-text-muted)',
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    marginBottom: 12,
+    fontWeight: 700,
+  },
+  variantGrid: {
+    display: 'flex',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  variantBtn: {
+    padding: '10px 24px',
+    borderRadius: 50,
+    border: '2px solid',
+    fontSize: 14,
+    fontWeight: 700,
+    cursor: 'pointer',
+    transition: 'var(--transition)',
+    fontFamily: 'inherit',
   }
 };

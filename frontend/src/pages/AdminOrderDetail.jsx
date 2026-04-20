@@ -95,7 +95,10 @@ export default function AdminOrderDetail() {
             <tbody>
               {order.items.map((item, i) => (
                 <tr key={i} style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={styles.td}>{item.name}</td>
+                  <td style={styles.td}>
+                    {item.name}
+                    {item.variant_ml && <span style={styles.variantBadge}>({item.variant_ml}ml)</span>}
+                  </td>
                   <td style={{...styles.td, textAlign: 'center'}}>{item.quantity}</td>
                   <td style={{...styles.td, textAlign: 'right'}}>{Number(item.price).toFixed(2)} PKR</td>
                 </tr>
@@ -190,5 +193,14 @@ const styles = {
     fontSize: 20,
     fontWeight: 600,
     animation: 'pulse 1.5s infinite',
+  },
+  variantBadge: {
+    marginLeft: 10,
+    color: 'var(--color-primary)',
+    fontSize: 12,
+    fontWeight: 700,
+    background: 'rgba(255,215,0,0.1)',
+    padding: '2px 8px',
+    borderRadius: '4px',
   }
 };

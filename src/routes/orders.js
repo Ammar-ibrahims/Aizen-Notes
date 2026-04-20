@@ -24,8 +24,8 @@ router.post('/', async (req, res) => {
 
     for (const item of items) {
       await client.query(
-        'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)',
-        [order.id, item.product_id, item.quantity, item.price]
+        'INSERT INTO order_items (order_id, product_id, quantity, price, variant_ml) VALUES ($1, $2, $3, $4, $5)',
+        [order.id, item.product_id, item.quantity, item.price, item.variant_ml]
       );
     }
 
@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
 router.get('/:email', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT o.*, json_agg(json_build_object('product_id', oi.product_id, 'quantity', oi.quantity, 'price', oi.price, 'name', p.name)) as items
+      `SELECT o.*, json_agg(json_build_object('product_id', oi.product_id, 'quantity', oi.quantity, 'price', oi.price, 'name', p.name, 'variant_ml', oi.variant_ml)) as items
        FROM orders o
        LEFT JOIN order_items oi ON o.id = oi.order_id
        LEFT JOIN products p ON oi.product_id = p.id
@@ -86,7 +86,7 @@ router.get('/', authMiddleware, async (req, res) => {
       `SELECT o.*, 
         COALESCE(
           json_agg(
-            json_build_object('product_id', oi.product_id, 'quantity', oi.quantity, 'price', oi.price, 'name', p.name)
+            json_build_object('product_id', oi.product_id, 'quantity', oi.quantity, 'price', oi.price, 'name', p.name, 'variant_ml', oi.variant_ml)
           ) FILTER (WHERE oi.id IS NOT NULL), '[]'
         ) as items
        FROM orders o
@@ -108,7 +108,7 @@ router.get('/detail/:id', authMiddleware, async (req, res) => {
       `SELECT o.*, 
         COALESCE(
           json_agg(
-            json_build_object('product_id', oi.product_id, 'quantity', oi.quantity, 'price', oi.price, 'name', p.name)
+            json_build_object('product_id', oi.product_id, 'quantity', oi.quantity, 'price', oi.price, 'name', p.name, 'variant_ml', oi.variant_ml)
           ) FILTER (WHERE oi.id IS NOT NULL), '[]'
         ) as items
        FROM orders o
