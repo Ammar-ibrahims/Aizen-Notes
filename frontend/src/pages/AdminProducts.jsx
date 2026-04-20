@@ -137,12 +137,20 @@ export default function AdminProducts() {
   };
 
   const handleImageError = (e) => {
-    e.target.src = 'https://placehold.co/400x400/1a1a1a/gold?text=Loading+Image...';
-    // Optionally retry after a delay for CDN propagation
+    const target = e.target;
+    const originalSrc = target.getAttribute('data-original-src');
+    
+    // Prevent infinite loops if the placeholder itself fails
+    if (target.src.includes('placehold.co')) return;
+
+    // Show loading placeholder
+    target.src = 'https://placehold.co/400x400/1a1a1a/gold?text=Retrying...';
+    
+    // Retry with a cache buster after 2 seconds
     setTimeout(() => {
-      const originalSrc = e.target.attributes['data-original-src']?.value;
-      if (originalSrc && e.target.src !== originalSrc) {
-        e.target.src = originalSrc;
+      if (originalSrc) {
+        const separator = originalSrc.includes('?') ? '&' : '?';
+        target.src = `${originalSrc}${separator}retry=${Date.now()}`;
       }
     }, 2000);
   };
