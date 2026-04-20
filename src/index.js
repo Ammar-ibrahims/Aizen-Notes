@@ -1,6 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const pool = require('./db');
+
+// Global Error Catchers to prevent silent 503 crashes
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('CRITICAL: Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('CRITICAL: Uncaught Exception thrown:', err);
+});
 
 const productsRouter = require('./routes/products');
 const cartRouter = require('./routes/cart');
@@ -24,8 +34,22 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Aizen Notes API is running' });
+app.get('/api/health', async (req, res) => {
+  try {
+    const dbCheck = await pool.query('SELECT 1');
+    res.json({ 
+      status: 'ok', 
+      database: 'connected', 
+      message: 'Aizen Notes API is perfectly healthy' 
+    });
+  } catch (err) {
+    console.error('HEALTH CHECK FAILED:', err.message);
+    res.status(500).json({ 
+      status: 'error', 
+      database: 'disconnected', 
+      error: err.message 
+    });
+  }
 });
 
 app.use('/api/products', productsRouter);
