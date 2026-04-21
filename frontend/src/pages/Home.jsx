@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import api from '../api';
 import ProductCard from '../components/ProductCard';
+import { LampContainer } from '../components/ui/lamp';
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
@@ -43,6 +45,69 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* === LAMP SECTION === */}
+      <LampContainer>
+        <motion.h2
+          initial={{ opacity: 0.5, y: 100 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.3,
+            duration: 0.8,
+            ease: 'easeInOut',
+          }}
+          style={{
+            fontFamily: 'var(--font-serif)',
+            textAlign: 'center',
+            fontSize: 'clamp(28px, 6vw, 72px)',
+            fontWeight: 900,
+            lineHeight: 1.2,
+            background: 'linear-gradient(135deg, #fff 30%, #e2e8f0 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            marginTop: 32,
+            padding: '16px 0',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          Experience the
+          <br />
+          <span style={{
+            background: 'linear-gradient(135deg, #ffd700 0%, #ffb800 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>
+            40% Oil Concentration
+          </span>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8, ease: 'easeInOut' }}
+          style={{
+            color: '#94a3b8',
+            fontSize: 'clamp(14px, 2vw, 20px)',
+            textAlign: 'center',
+            maxWidth: 600,
+            marginTop: 16,
+            lineHeight: 1.8,
+            fontWeight: 400,
+            letterSpacing: '0.02em',
+          }}
+        >
+          The highest fragrance concentration available. Pure, long-lasting luxury that stays with you all day.
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.6, ease: 'easeInOut' }}
+          style={{ marginTop: 32 }}
+        >
+          <Link to="/shop" className="btn-3d" style={{ padding: '16px 40px', fontSize: '14px' }}>Discover Our Scents</Link>
+        </motion.div>
+      </LampContainer>
 
       <section style={styles.section}>
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
