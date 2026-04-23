@@ -1,10 +1,11 @@
 import axios from 'axios';
 
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 
-           (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:3000' 
-            : 'https://mediumorchid-alpaca-129729.hostingersite.com'), // Real Hostinger backend
+  baseURL: isLocal 
+    ? 'http://localhost:3000' 
+    : 'https://mediumorchid-alpaca-129729.hostingersite.com', // HARDCODED for production
   timeout: 10000,
 });
 
