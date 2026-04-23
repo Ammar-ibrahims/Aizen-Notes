@@ -4,7 +4,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 
            (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://localhost:3000' 
-            : ''), // Empty string means it will use relative paths if on the same domain
+            : 'https://mediumorchid-alpaca-129729.hostingersite.com'), // Real Hostinger backend
   timeout: 10000,
 });
 
